@@ -10,15 +10,15 @@ export function resolveAPU( pathOrURL, wanted ) {
 		switch(wanted) {
 			case "path":
 				if(typeof pathOrURL === 'string' && ! pathOrURL.startsWith('@')) {
-					console.log('Path provided, path needed, no change.');
+					//console.log('Path provided, path needed, no change.');
 					return pathOrURL;
 				}
 				else if(typeof pathOrURL === 'string' && pathOrURL.startsWith('@')) {
-					console.log('String module alias provided, path needed, converting.');
+					//console.log('String module alias provided, path needed, converting.');
 					return fileURLToPath( import.meta.resolve( pathOrURL ) );
 				}
 				else if( pathOrURL instanceof URL && pathOrURL.protocol === 'file:' ) {
-					console.log('File URL provided, path needed, converting.');
+					//console.log('File URL provided, path needed, converting.');
 					return fileURLToPath( pathOrURL );
 				}
 				else {
@@ -29,15 +29,15 @@ export function resolveAPU( pathOrURL, wanted ) {
 				break;
 			case "URL":
 				if( typeof pathOrURL === 'string' && ! pathOrURL.startsWith('@')) {
-					console.log('Path provided, File URL needed, converting.');
+					//console.log('Path provided, File URL needed, converting.');
 					return pathToFileURL( pathOrURL );
 				}
 				else if( typeof pathOrURL === 'string' && pathOrURL.startsWith('@')) {
-					console.log('String module alias provided, File URL needed, converting.');
+					//console.log('String module alias provided, File URL needed, converting.');
 					return import.meta.resolve( pathOrURL );
 				}
 				else if( pathORURL instanceof URL && pathOrURL.protocol === 'file:' ) {
-					console.log('File URL provided, File URL needed, no change.');
+					//console.log('File URL provided, File URL needed, no change.');
 					return pathOrURL;
 				}
 				else {

@@ -21,9 +21,14 @@ class IHandler {
 		const handlerDir = resolveAPU( `@${ handlerType.toLowerCase() }`, 'path' );
 		const allFiles = this.getFilesRecursively( handlerDir );
 
-		const validFiles = allFiles.filter( file => this.validateFile( file ) );
-		this.availableFiles = validFiles;
-		return validFiles;
+		try {
+		    const validFiles = allFiles.filter( file => this.validateFile( file ) );
+		    this.availableFiles = validFiles;
+		    return validFiles;
+		}
+		catch( validationError ) {
+			console.error("Validation Error:", validationError );
+		}
 	}
 
 	getFilesRecursively( directoryPath ) {
@@ -70,7 +75,7 @@ class IHandler {
 	}
 
 	validateFile( filePath ) {
-		const err = "Method 'validateFile()' must be implemetned.";
+		const err = "Method 'validateFile()' must be implemented.";
 		console.error( err );
 		throw new Error( err );
 	}

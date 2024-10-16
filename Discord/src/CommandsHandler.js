@@ -113,7 +113,7 @@ class CommandsHandler extends IHandler {
 
     }
 
-    guildCmdUpdate() {
+    async guildCmdUpdate(client) {
 
     }
 
