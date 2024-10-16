@@ -1,8 +1,8 @@
 import path from 'path';
-
 import { Events } from 'discord.js';
+import { resolveAPU } from '@utils/resolveAPU.js';
 
-const databaseHandlerPath = path.join(global.__rootdir, 'src/DatabaseHandler.js');
+const databaseHandlerPath = resolveAPU('@src/DatabaseHandler.js', 'path');
 const { DatabaseHandler } = await import(databaseHandlerPath);
 
 export default {
