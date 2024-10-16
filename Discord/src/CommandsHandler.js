@@ -139,7 +139,8 @@ class CommandsHandler extends IHandler {
 
 		//console.dir(commands, { depth: null});
 
-		await client.application?.commands.set(commands);
+		const result = await client.application?.commands.set(commands);
+		//console.dir(result, {depth:null});
 		//updatecommandsinthearray();
 
 		this.logger.log(`Successfully reloaded ${commands.length} application global (/) commands.`, 'success');

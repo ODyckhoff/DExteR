@@ -15,6 +15,10 @@ class ModuleHandler extends IHandler {
 		return this.availableModules;
 	}
 
+	validateFile( filePath ) {
+		return true;
+	}
+
 
 }
 export { ModuleHandler };

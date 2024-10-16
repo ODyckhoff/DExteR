@@ -20,7 +20,7 @@ console.log("8 8888        ,88' 8 8888           .8'  `8.`8888.         8 8888  
 console.log("8 8888    ,o88P'   8 8888          .8'    `8.`8888.        8 8888       8 8888         8 8888   `8b.   ");
 console.log("8 888888888P'      8 888888888888 .8'      `8.`8888.       8 8888       8 888888888888 8 8888     `88. ");
 console.log("");
-console.log("DEXTER is a Discord EXTEndable Robot - Created to allow cutom modules to be used for any Discord Guilds!");
+console.log("DEXTER is a Discord EXTEndable Robot - Created to allow custom modules to be used for any Discord Guilds!");
 console.log();
 console.log(chalk.green("Initialising DEXTER..."));
 console.log(chalk.green("======================"));
@@ -67,14 +67,17 @@ logHandler.log("Commands Loaded", 'success');
 	//await commandsHandler.globalCmdUpdate( client );
 	//console.dir(client.commands, {depth:null});
 
-//const moduleHandler = new ModuleHandler();
-//try {
-//    const modules = moduleHandler.getFiles('modules');
-//    const modulesMap = moduleHandler.loadFiles( modules );
-//}
-//catch( moduleError ) {
-//	console.error('Error loading modules: ', moduleError);
-//}
+logHandler.log("Loading Modules...", 'info', 'core');
+const moduleHandler = new ModuleHandler();
+try {
+    const modules = await moduleHandler.getFiles('modules');
+    console.dir(modules, {depth:null});
+    const modulesMap = moduleHandler.loadFiles( modules );
+}
+catch( moduleError ) {
+	logHandler.log(moduleError, 'error','ModuleHandler');
+}
+logHandler.log('Loaded Modules.', 'success');
 
 logHandler.log("Loading Events...", 'info', 'core');
 const eventsHandler = new EventsHandler(client);
