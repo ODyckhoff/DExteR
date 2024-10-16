@@ -8,6 +8,7 @@ class EventsHandler {
     }
 
     getEvents(client) {
+        const eventPath = path.join(global.__rootdir, 'src/events');
         const eventFiles = fs.readdirSync('@events').filter(file => file.endsWith('.js'));
         for (const file of eventFiles) {
             this.#getFile(file);
@@ -15,7 +16,7 @@ class EventsHandler {
     }
 
     #getFile(file) {
-        const filePath = path.join('@events', file);
+        const filePath = path.join(global.__rootdir, 'src/events', file);
         const event = require(filePath);
         if(event.once) {
             client.once(event.name, (...args) => event.execute(...args));
