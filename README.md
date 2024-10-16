@@ -1,7 +1,9 @@
 # DExteR
 A Discord Extendable Robot, written using NodeJS/ESM.
 
-![DExteR Logo](assets/img/core/dexter-logo-transparent.png)
+<center>
+ <img alt="DExteR Logo. A robot head with a stylised D on its forehead" src="assets/img/core/dexter-logo-transparent-1326x1550.png" width="25%">
+</center>
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -32,6 +34,6 @@ With DExteR installed, simply run:
 ```
 
 ## License
-This software is covered by the Mozilla Public License, Verion 2. A copy of this license is included in this repository: [Link to MPLv2](LICENSE)
+This software is covered by the Mozilla Public License, Version 2. A copy of this license is included in this repository: [Link to MPLv2](LICENSE)
 
 A brief summary is that you can do whatever you like with this code, so long as it remains open source under the terms of the license. I do not have any liability for your use of the software, nor do I offer any warranty.
