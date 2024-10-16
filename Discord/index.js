@@ -15,7 +15,7 @@ const { CommandsHandler } = await import(commandsHandlerPath);
 const { EventsHandler } = await import(eventsHandlerPath);
 
 const { token } = await import(path.join(global.__rootdir, 'config.json'), { assert: { type: 'json' }});
-
+console.log(typeof token);
 const client = new Client({ intents: [GatewayIntentBits.Guilds]});
 
 const commandsHandler = new CommandsHandler();
