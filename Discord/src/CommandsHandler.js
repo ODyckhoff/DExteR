@@ -1,6 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import { Client, Collection } from 'discord.js';
+import chalk from 'chalk';
+import { Collection } from 'discord.js';
 
 class CommandsHandler {
     constructor() {
@@ -28,15 +29,23 @@ class CommandsHandler {
     #getFiles(commandFiles, commandsPath) {
         for(const file of commandFiles) {
             const filePath = path.join(commandsPath, file);
-                const command = import(filePath);
+                import(filePath).then(commandModule => {
+			if(typeof commandModule.default === 'function') {
+				const command = commandModule.default();
+                		if(this.#isCommandValid(command)) {
+                		    this.commands.set(command.data.name, command);
+                		}
+                		else {
+                   		 console.warn(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+                		}
+				this.commands.set(command.data.name, command);
+			}
+			else {
+				console.error(`[ERROR] Invalid command module: ${file}. Default export must be a function.`);
+			}
+		});
 
                 // Check file is valid
-                if(this.#isCommandValid(command)) {
-                    this.commands.set(command.data.name, command);
-                }
-                else {
-                    console.warn(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
-                }
         }
     }
 
@@ -46,7 +55,7 @@ class CommandsHandler {
         const command = interaction.client.commands.get(interaction.commandName);
 
         if(!command) {
-            console.error(`No command matching ${interaction.commandName} was found.`);
+            console.error(`[ERROR] No command matching ${interaction.commandName} was found.`);
             await interaction.followUp({ content: `No command matching ${interaction.commandName} was found.` });
             return;
         }
@@ -55,7 +64,7 @@ class CommandsHandler {
             await command.execute(interaction);
         }
         catch (error) {
-            console.error(`Error executing command ${interaction.commandName}: ${error}`);
+            console.error(`[ERROR] Error executing command ${interaction.commandName}: ${error}`);
             if(interaction.replied || interaction.deferred) {
                 await interaction.followUp({ content: `There was an error whilst executing ${interaction.commandName}!`, ephemeral: true });
             }
@@ -70,8 +79,31 @@ class CommandsHandler {
 
     }
 
-    globalCmdUpdate() {
+    async globalCmdUpdate(client) {
+	try {
+		console.log('Started refreshing application (/) commands.');
 
+		const commandsPath = path.join(global.__rootdir, 'src/commands');
+		const commandFiles = fs.readdirSync(commandsPath).filter( file =>
+			file.endsWith('js')
+		);
+
+		const commands = [];
+
+		for (const file of commandFiles) {
+			const filePath = path.join(commandsPath, file);
+			const commandModule = await import(filePath);
+			const command = commandModule.default();
+			commands.push(command.data.toJSON());
+		}
+
+		await client.application?.commands.set(commands);
+
+		console.log(chalk.green("Successfully reloaded application (/) commands."));
+	}
+	catch (error) {
+		console.error('Error reloading application (/) commands:', error);
+	}
     }
 
     #isCommandValid(command) {
