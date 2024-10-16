@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { resolveAPU } from '@utils/resolveAPU.js';
 
 class EventsHandler {
     constructor() {
@@ -8,7 +9,7 @@ class EventsHandler {
 
     getEvents(client) {
 	console.log('Getting Events');
-        const eventPath = path.join(global.__rootdir, 'src/events');
+        const eventPath = resolveAPU('@events', 'path');
         const eventFiles = fs.readdirSync(eventPath).filter(file => file.endsWith('.js'));
         for (const file of eventFiles) {
 		console.log('reading file');
@@ -17,7 +18,7 @@ class EventsHandler {
     }
 
     #getFile(file, client) {
-	const filePath = path.join(global.__rootdir, 'src/events', file);
+	const filePath = path.join(resolveAPU('@events', 'path'), file);
 	console.log(`Importing ${filePath}...`);
 	import(filePath).then(eventModule => {
 		const event = eventModule.default;

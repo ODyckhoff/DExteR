@@ -1,13 +1,14 @@
 import path from 'node:path';
 import fs from 'node:fs';
+import { resolveAPU } from '@utils/resolveAPU.js';
 
 class ConfigHandler {
-    constructor() {
-        this.config = this.#loadConfig();
+    constructor(name = 'config.json') {
+        this.config = this.#loadConfig(name);
     }
 
-    #loadConfig() {
-        const configFilePath = path.join(global.__rootdir, 'config.json');
+    #loadConfig(configName) {
+        const configFilePath = path.join(resolveAPU('@root', 'path'), configName);
         const configData = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
         return configData;
     }

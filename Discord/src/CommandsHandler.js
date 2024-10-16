@@ -1,7 +1,10 @@
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import chalk from 'chalk';
 import { Collection } from 'discord.js';
+
+import { resolveAPU } from '@utils/resolveAPU.js';
 
 class CommandsHandler {
     constructor() {
@@ -11,8 +14,7 @@ class CommandsHandler {
     getCmds() {
         this.commands = new Collection();
 
-        const foldersPath = path.join(global.__rootdir, '/src/commands');
-        const commandFolders = fs.readdirSync(foldersPath);
+        const commandFolders = fs.readdirSync(resolveAPU('@commands', 'path'));
         this.#getFolders(commandFolders);
   
         return this.commands;
@@ -20,15 +22,15 @@ class CommandsHandler {
 
     #getFolders(commandFolders) {
         for(const folder of commandFolders) {
-            const commandsPath = path.join(global.__rootdir, '/src/commands', folder);
-            const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
-            this.#getFiles(commandFiles, commandsPath);
+            const commandPath = resolveAPU('@commands', 'path');
+            const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js'));
+            this.#getFiles(commandFiles, commandPath);
         }
     }
 
-    #getFiles(commandFiles, commandsPath) {
+    #getFiles(commandFiles, commandPath) {
         for(const file of commandFiles) {
-            const filePath = path.join(commandsPath, file);
+            const filePath = path.join(commandPath, file);
                 import(filePath).then(commandModule => {
 			if(typeof commandModule.default === 'function') {
 				const command = commandModule.default();
@@ -83,15 +85,15 @@ class CommandsHandler {
 	try {
 		console.log('Started refreshing application (/) commands.');
 
-		const commandsPath = path.join(global.__rootdir, 'src/commands');
-		const commandFiles = fs.readdirSync(commandsPath).filter( file =>
+		const commandPath = resolveAPU('@commands', 'path');
+		const commandFiles = fs.readdirSync(commandPath).filter( file =>
 			file.endsWith('js')
 		);
 
 		const commands = [];
 
 		for (const file of commandFiles) {
-			const filePath = path.join(commandsPath, file);
+			const filePath = path.join(commandPath, file);
 			const commandModule = await import(filePath);
 			const command = commandModule.default();
 			commands.push(command.data.toJSON());

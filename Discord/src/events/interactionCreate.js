@@ -1,7 +1,8 @@
 import path from 'path';
 import { Events } from 'discord.js';
+import { resolveAPU } from '@utils/resolveAPU.js';
 
-const commandsHandlerPath = path.join(global.__rootdir, '/src/CommandsHandler.js');
+const commandsHandlerPath = resolveAPU('@src/CommandsHandler.js', 'path');
 const { CommandsHandler } = await import(commandsHandlerPath);
 
 export default {

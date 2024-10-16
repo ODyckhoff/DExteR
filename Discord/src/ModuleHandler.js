@@ -1,6 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 import { parse } from 'acorn';
+import { resolveAPU } from '@utils/resolveAPU.js';
 
 class ModuleHandler {
 	constructor() {
@@ -15,7 +16,7 @@ class ModuleHandler {
 	getModules() {
 		const modules = [];
 
-		const moduleDirPath = path.join(global.__rootdir, 'src/modules');
+		const moduleDirPath = resolveAPU('@modules', 'path');
 		const moduleDirs = fs.readdirSync(moduleDirPath, { withFileTypes: true })
 			.filter(dirent => dirent.isDirectory())
 			.map(dirent => dirent.name);
@@ -82,7 +83,7 @@ class ModuleHandler {
 		}
 
 		try {
-			const modulePath = path.join(global.__rootdir, 'src/modules', moduleName, 'index.js');
+			const modulePath = path.join(resolveAPU('@modules', 'path'), moduleName, 'index.js');
 			const moduleClass = (await import(modulePath)).default;
 			const moduleInstance = new moduleClass();
 
