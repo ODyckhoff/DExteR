@@ -78,3 +78,5 @@ class CommandsHandler {
         return ('data' in command && 'execute' in command);
     }
 }
+
+module.exports = CommandsHandler;
