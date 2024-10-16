@@ -83,7 +83,7 @@ class CommandsHandler {
 
     async globalCmdUpdate(client) {
 	try {
-		console.log('Started refreshing application (/) commands.');
+		console.log('Started refreshing application global (/) commands.');
 
 		const commandPath = resolveAPU('@commands', 'path');
 		const commandFiles = fs.readdirSync(commandPath).filter( file =>
@@ -101,7 +101,7 @@ class CommandsHandler {
 
 		await client.application?.commands.set(commands);
 
-		console.log(chalk.green("Successfully reloaded application (/) commands."));
+		console.log(chalk.green(`Successfully reloaded ${commands.length} application global (/) commands.`));
 	}
 	catch (error) {
 		console.error('Error reloading application (/) commands:', error);
