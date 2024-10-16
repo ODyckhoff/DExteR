@@ -5,7 +5,7 @@ import { Client, Collection, Presence, GatewayIntentBits } from 'discord.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(__dirname);
 global.__rootdir = rootDir;
 
 const commandsHandlerPath = path.join(global.__rootdir, '/src/CommandsHandler.js');
