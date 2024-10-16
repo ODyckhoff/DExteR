@@ -1,0 +1,7 @@
+config.json
+*.sw*
+test*
+node_modules
+eslint.*
+src/modules/*
+
