@@ -15,10 +15,11 @@ const eventsHandlerPath = path.join(global.__rootdir, '/src/EventsHandler.js');
 const { CommandsHandler } = await import(commandsHandlerPath);
 const { EventsHandler } = await import(eventsHandlerPath);
 
+/*
 let token;
-await import(path.join(global.__rootdir, 'config.json'), { assert: { type: 'json' }})
+import(path.join(global.__rootdir, 'config.json'), { assert: { type: 'json' }})
     .then(config => {
-        token = config.token
+        token = config.token;
         console.log(typeof token);
         const client = new Client({ intents: [GatewayIntentBits.Guilds]});
 
@@ -34,3 +35,25 @@ await import(path.join(global.__rootdir, 'config.json'), { assert: { type: 'json
     .catch(error => {
         console.error('Error loading config.json', error);
     });
+*/
+
+const client = new Client({ intents: [GatewayIntentBits.Guilds]});
+const commandsHandler = new CommandsHandler();
+client.commands = commandsHandler.getCmds();
+
+const eventsHandler = new EventsHandler();
+eventsHandler.getEvents(client);
+
+/*let configData;
+try {
+    configData = await import(path.join(global.__rootdir, 'config.json'), { assert: { type: 'json' }});
+} catch(error) {
+    console.error("Error loading config.json:", error);
+}*/
+
+const configFilePath = path.join(global.__rootdir, 'config.json');
+const configData = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
+const token = configData.token;
+
+client.login(configData.token);
+
