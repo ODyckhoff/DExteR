@@ -22,6 +22,6 @@ const commandsHandler = new CommandsHandler();
 client.commands = commandsHandler.getCmds();
 
 const eventsHandler = new EventsHandler();
-eventsHandler.getEvents();
+eventsHandler.getEvents(client);
 
 client.login(token);
