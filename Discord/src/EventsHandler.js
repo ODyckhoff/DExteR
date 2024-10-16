@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { Client } from 'discord.js';
+
 class EventsHandler {
     constructor() {
 
