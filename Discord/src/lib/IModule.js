@@ -5,6 +5,10 @@ class IModule {
 		}
 	}
 
+	get version() {
+		throw new Error("Property 'version' must be implemented.");
+	}
+
 	start(client) {
 		throw new Error("Method 'start()' must be implemented");
 	}

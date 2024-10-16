@@ -14,10 +14,10 @@ import path from 'path';
 import { fileURLToPath } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
 
-const { ConfigHandler   } = await import('@src/ConfigHandler.js');
+//const { ConfigHandler   } = await import('@src/ConfigHandler.js');
 const { CommandsHandler } = await import('@src/CommandsHandler.js');
-const { EventsHandler   } = await import('@src/EventsHandler.js');
-const { ModuleHandler   } = await import('@src/ModuleHandler.js');
+//const { EventsHandler   } = await import('@src/EventsHandler.js');
+//const { ModuleHandler   } = await import('@src/ModuleHandler.js');
 
 const client = new Client({
 	intents: [
@@ -26,10 +26,22 @@ const client = new Client({
 		GatewayIntentBits.MessageContent,
 	]
 });
-const commandsHandler = new CommandsHandler();
-client.commands = commandsHandler.getCmds();
-commandsHandler.globalCmdUpdate(client);
+const commandsHandler = new CommandsHandler(client);
+try {
+	const commands = await commandsHandler.getFiles('commands');
+	const commandsMap = await commandsHandler.loadFiles( commands );
+	console.log("Displaying contents of commandsMap:");
+	console.dir(commandsMap, { depth: null });
+	console.log("END of commandsMap.");
+}
+catch( err ) {
+	console.error( err );
+}
 
+
+//commandsHandler.globalCmdUpdate( client );
+
+/*
 const eventsHandler = new EventsHandler();
 eventsHandler.getEvents(client);
 
@@ -46,4 +58,4 @@ if(typeof token !== 'undefined') {
 else {
 	console.error('config value \'app_settings.token\' is undefined.');
 }
-
+*/

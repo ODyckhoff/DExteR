@@ -5,8 +5,14 @@ class ICommand {
 		}
 	}
 
-	execute() {
-		throw new Error("The 'execute()' method must be defined.");
+	get version() {
+		throw new Error("Property 'version' must be implemented.");
+	}
+
+	get data() {
+		throw new Error("Property 'data' must be implemented.");
 	}
 }
+
+export { ICommand }
 

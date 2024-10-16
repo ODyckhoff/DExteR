@@ -1,8 +1,16 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { resolveAPU } from '@lib/resolveAPU.js'
+
 class IHandler {
-	constructor() {
+	constructor(client) {
 		if( this.constructor.name === 'IHandler' ) {
 			throw new Error( "'IHandler' is an abstract class and cannot be instantiated." );
 		}
+
+		this.client = client;
+		this.availableFiles = [];
+		this.availableInstances = new Map();
 	}
 
 	async getFiles( handlerType ) {
@@ -10,10 +18,12 @@ class IHandler {
 		// this would load .js files from `/src/@${handlerType}/`
 		// Returns a list of available file paths.
 		
-		const handlerDir = resolveAPU( `@${ handlerType.toLowerCase() }` );
-		const allFiles = getFilesRecursively( handlerDir );
+		const handlerDir = resolveAPU( `@${ handlerType.toLowerCase() }`, 'path' );
+		const allFiles = this.getFilesRecursively( handlerDir );
 
-		const validFiles = allFiles.filter( file => this.validateFileContent( file ) );
+		const validFiles = allFiles.filter( file => this.validateFile( file ) );
+		this.availableFiles = validFiles;
+		console.log(validFiles);
 		return validFiles;
 	}
 
@@ -31,7 +41,7 @@ class IHandler {
 			);
 			if( entry.isDirectory() ) {
 				files = files.concat(
-					getFilesRecursively( entryPath )
+					this.getFilesRecursively( entryPath )
 				);
 			}
 			else if( entry.isFile() && entry.name.endsWith( '.js' ) ) {
@@ -42,15 +52,31 @@ class IHandler {
 	}
 
 	async loadFiles( filePaths ) {
+		console.log(filePaths);
 		// takes a list of file paths, attempts to import and instantiate.
 		// Returns a Map of the file names and the class instances.
-	
+		const instances = new Map();
+		for ( const file of filePaths ) {
+			try {
+				const module = await import(file);
+				const [exportedClassName, exportedClass] = Object.entries(module)[0];
+				const instance = new exportedClass();
+				instances.set(exportedClassName, { instance, version: instance.version });
+			}
+			catch( err ) {
+				console.error (err );
+			}
+		}
+		this.availableInstances = instances;
+		return instances;
 	}
 
-	validateFileContent( filePath ) {
+	validateFile( filePath ) {
 		const err = "Method 'validateFileContent()' must be implemetned.";
 		console.error( err );
 		throw new Error( err );
 	}
 }
+
+export { IHandler }
 

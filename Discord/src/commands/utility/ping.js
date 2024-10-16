@@ -1,13 +1,29 @@
 import { SlashCommandBuilder } from 'discord.js';
+import { ICommand } from '@lib/ICommand.js';
 
-export default function getPingCommand() {
-	return {
-		data: new SlashCommandBuilder()
+class CommandPing extends ICommand {
+	constructor() {
+		super();
+	}
+
+	get version() {
+		return '1.0';
+	}
+
+	get data() {
+		return this.#createSlashCommand();
+	}
+
+	async execute(interaction) {
+		await interaction.reply('Pong!');
+	}
+
+	#createSlashCommand() {
+		return new SlashCommandBuilder()
 			.setName('ping')
-			.setDescription('Replies with pong!'),
-		async execute(interaction) {
-			await interaction.reply('Pong!');
-		},
-	};
+			.setDescription('Replies with pong!')
+		;
+	}
 }
 
+export { CommandPing }

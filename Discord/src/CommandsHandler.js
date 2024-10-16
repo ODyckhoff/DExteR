@@ -3,52 +3,84 @@ import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import chalk from 'chalk';
 import { Collection } from 'discord.js';
-
 import { resolveAPU } from '@utils/resolveAPU.js';
+import { IHandler } from '@lib/IHandler.js';
+import { parse } from 'acorn';
 
-class CommandsHandler {
-    constructor() {
-
+class CommandsHandler extends IHandler {
+    constructor(client) {
+	super(client);
     }
 
-    getCmds() {
-        this.commands = new Collection();
+    validateFile( filePath ) {
+	    const moduleCode = fs.readFileSync(filePath, 'utf-8');
 
-        const commandFolders = fs.readdirSync(resolveAPU('@commands', 'path'));
-        this.#getFolders(commandFolders);
-  
-        return this.commands;
-    }
+	    try {
+		    const ast = parse( moduleCode, { ecmaVersion: 'latest', sourceType: 'module' });
+		    const exportNamedDeclaration = ast.body.find(
+			    node => node.type === 'ExportNamedDeclaration' &&
+			            node.specifiers &&
+			    	    node.specifiers.length > 0 &&
+			    	    node.specifiers[0].exported.type === 'Identifier'
+		    );
 
-    #getFolders(commandFolders) {
-        for(const folder of commandFolders) {
-            const commandPath = resolveAPU('@commands', 'path');
-            const commandFiles = fs.readdirSync(commandPath).filter(file => file.endsWith('.js'));
-            this.#getFiles(commandFiles, commandPath);
-        }
-    }
+		    if(!exportNamedDeclaration) {
+			    console.error(`No named export found in ${filePath}`);
+			    return false;
+		    }
+		    const exportedClassName = exportNamedDeclaration.specifiers[0].exported.name;
 
-    #getFiles(commandFiles, commandPath) {
-        for(const file of commandFiles) {
-            const filePath = path.join(commandPath, file);
-                import(filePath).then(commandModule => {
-			if(typeof commandModule.default === 'function') {
-				const command = commandModule.default();
-                		if(this.#isCommandValid(command)) {
-                		    this.commands.set(command.data.name, command);
-                		}
-                		else {
-                   		 console.warn(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
-                		}
-				this.commands.set(command.data.name, command);
-			}
-			else {
-				console.error(`[ERROR] Invalid command module: ${file}. Default export must be a function.`);
-			}
-		});
+		    const classDeclaration = ast.body.find(
+			    node => node.type === 'ClassDeclaration' &&
+			    	    node.id.name === exportedClassName
+		    );
+		    if(! classDeclaration ) {
+			    console.error(`Not a class in ${filePath}`);
+			    return false;
+		    }
 
-                // Check file is valid
-        }
+		    const extendsICommand = classDeclaration.superClass && classDeclaration.superClass.name === 'ICommand';
+		    if(! extendsICommand ) {
+			    console.error(`${filePath} Does not extend ICommand`);
+			    return false;
+		    }
+
+		    const hasExecuteMethod = classDeclaration.body.body.some(
+			    method => method.type === 'MethodDefinition' &&
+			    	      method.key.name === 'execute' &&
+			    	      method.kind === 'method'
+		    );
+		    if(! hasExecuteMethod ) {
+			    console.error(`${filePath} Does not implement execute method`);
+			    return false;
+		    }
+
+		    const hasDataGetter = classDeclaration.body.body.some(
+			    method => method.type === 'MethodDefinition' &&
+			    	      method.key.name === 'data' &&
+			    	      method.kind === 'get'
+		    );
+		    if(! hasDataGetter ) {
+			    console.error(`${filePath} Does not have a get data() method`);
+			    return false;
+		    }
+
+		    const hasVersionGetter = classDeclaration.body.body.some(
+			    method => method.type === 'MethodDefinition' &&
+			    	      method.key.name === 'version' &&
+			    	      method.kind === 'get'
+		    );
+		    if(! hasVersionGetter ) {
+			    console.error(`${filePath} Does not have a get version() method`);
+			    return false;
+		    }
+
+		    return true;
+	    }
+	    catch( err ) {
+		    console.error(`Error parsing command file ${filePath}:`, err);
+		    return false;
+	    }
     }
 
     async handleInteraction(interaction) {

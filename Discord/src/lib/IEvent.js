@@ -6,6 +6,10 @@ class IEvent {
 		}
 	}
 
+	get version() {
+		throw new Error("Property 'version' must be implemented.");
+	}
+
 	async execute() {
 		throw new Error("The 'execute()' function must be defined.");
 	}

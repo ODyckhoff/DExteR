@@ -3,6 +3,7 @@ import { SlashCommandBuilder } from 'discord.js';
 import { resolveAPU } from '@lib/resolveAPU.js';
 import { DatabaseHandler } from '@src/DatabaseHandler.js';
 import { ModuleHandler } from '@src/ModuleHandler.js';
+import { ICommand } from '@lib/ICommand.js';
 
 const moduleHandler = new ModuleHandler();
 const availableModules = moduleHandler.getAvailableModules();
@@ -10,7 +11,15 @@ const availableModules = moduleHandler.getAvailableModules();
 class CommandBotSetup extends ICommand {
 
 	constructor() {
-		this.data = this.#createSlashCommand();
+		super();
+	}
+
+	get version() {
+		return '0.9a';
+	}
+
+	get data() {
+		return this.#createSlashCommand();
 	}
 
 	async execute(interaction) {
