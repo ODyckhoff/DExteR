@@ -4,6 +4,11 @@ import { SlashCommandBuilder } from 'discord.js';
 const databaseHandlerPath = path.join(global.__rootdir, 'src/DatabaseHandler.js');
 const { DatabaseHandler } = await import(databaseHandlerPath);
 
+const moduleHandlerPath = path.join(global.__rootdir, 'src/ModuleHandler.js');
+const { ModuleHandler } = await import(moduleHandlerPath);
+const moduleHandler = new ModuleHandler();
+const availableModules = moduleHandler.getAvailableModules();
+
 export default function botSetupCommand() {
 	return {
 		data: new SlashCommandBuilder()
@@ -27,6 +32,7 @@ export default function botSetupCommand() {
 	                            option.setName('module_name')
 	                                .setDescription('The name of the module')
 	                                .setRequired(true)
+					.setAutocomplete(true)
 	                        )
 	                )
 	                .addSubcommand(subcommand =>
@@ -152,6 +158,16 @@ export default function botSetupCommand() {
 					}
 				}
 			} 
+		},
+
+		async handleAutocomplete(interaction: AutocompleteInteraction) {
+			if(interaction.options.getSubcommand() === 'module') {
+				const focusedValue = interaction.options.getFocused();
+				const filtered = availableModules.filter(choice => choice.startsWith(focusedValue));
+				await interaction.respond(
+					filtered.map(choice => ({ name: choice, value: choice })),
+				);
+			}
 		}
 	};
 }

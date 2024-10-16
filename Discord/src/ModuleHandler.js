@@ -5,6 +5,11 @@ import { parse } from 'acorn';
 class ModuleHandler {
 	constructor() {
 		this.loadedModules = new Map();
+		this.availableModules = [];
+	}
+
+	getAvailableModules() {
+		return this.availableModules;
 	}
 
 	getModules() {
@@ -28,6 +33,8 @@ class ModuleHandler {
 				console.warn(`Module '${moduleName}' is missing an index.js file.`);
 			}
 		}
+		this.availableModules = modules;
+		return modules;
 	}
 
 	#validateModuleIndex(file, moduleName) {
