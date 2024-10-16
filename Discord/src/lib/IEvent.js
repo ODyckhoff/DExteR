@@ -6,6 +6,10 @@ class IEvent {
 		}
 	}
 
+	get name() {
+		throw new Error("Property 'name' must be implemented.");
+	}
+
 	get version() {
 		throw new Error("Property 'version' must be implemented.");
 	}
@@ -14,4 +18,6 @@ class IEvent {
 		throw new Error("The 'execute()' function must be defined.");
 	}
 }
+
+export { IEvent }
 

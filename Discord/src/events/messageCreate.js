@@ -1,7 +1,23 @@
 import { Events } from 'discord.js';
+import { IEvent } from '@lib/IEvent.js';
 
-export default {
-	name: Events.MessageCreate,
+class EventMessageCreate extends IEvent {
+	constructor(client) {
+		super(client);
+	}
+
+	get name() {
+		return Events.MessageCreate;
+	}
+
+	get version() {
+		return '0.1';
+	}
+
+	get once() {
+		return false;
+	}
+
 	async execute(message) {
 		if(message.author.bot) return;
 
@@ -12,4 +28,7 @@ export default {
 			await message.reply('pong!');
 		}
 	}
-};
+}
+
+export { EventMessageCreate }
+

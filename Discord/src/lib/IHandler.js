@@ -23,7 +23,6 @@ class IHandler {
 
 		const validFiles = allFiles.filter( file => this.validateFile( file ) );
 		this.availableFiles = validFiles;
-		console.log(validFiles);
 		return validFiles;
 	}
 
@@ -52,7 +51,6 @@ class IHandler {
 	}
 
 	async loadFiles( filePaths ) {
-		console.log(filePaths);
 		// takes a list of file paths, attempts to import and instantiate.
 		// Returns a Map of the file names and the class instances.
 		const instances = new Map();

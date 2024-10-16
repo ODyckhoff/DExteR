@@ -1,12 +1,25 @@
 import path from 'path';
 import { Events } from 'discord.js';
 import { resolveAPU } from '@utils/resolveAPU.js';
+import { IEvent } from '@lib/IEvent.js';
 
-const databaseHandlerPath = resolveAPU('@src/DatabaseHandler.js', 'path');
-const { DatabaseHandler } = await import(databaseHandlerPath);
+class EventGuildCreate extends IEvent {
+	constructor(client) {
+		super(client);
+	}
 
-export default {
-	name: Events.GuildCreate,
+	get name() {
+		return Events.GuildCreate;
+	}
+
+	get version() {
+		return '0.1';
+	}
+
+	get once() {
+		return false;
+	}
+
 	async execute(guild) {
 		console.log(`Joined a new guild: ${guild.name}`);
 		try {
@@ -25,4 +38,6 @@ export default {
 
 	}
 }
+
+export { EventGuildCreate }
 
