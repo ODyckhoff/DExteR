@@ -1,20 +1,19 @@
 import { Events } from 'discord.js';
 import { IEvent } from '@lib/IEvent.js'
 import { CommandsHandler } from '@src/CommandsHandler.js';
+import { LogHandler } from '@src/LogHandler.js';
 
 class EventReady extends IEvent {
 	constructor(client) {
-		console.log('EventReady was instantiated');
 		super(client);
+		this.logger = new LogHandler();
 	}
 
 	get version() {
-		console.log('EventReady version was fetched');
 		return '0.1';
 	}
 
 	get name() {
-		console.log('Event.ClientReady name was fetched');
 		return Events.ClientReady;
 	}
 
@@ -23,7 +22,8 @@ class EventReady extends IEvent {
 	}
 
 	async execute(client, commandsHandler) {
-		console.log(`Ready! Logged in as ${client.user.tag}`);
+		this.logger.log(`Ready! Logged in as ${client.user.tag}`, 'success', 'EventReady');
+		client.user.setUsername("DExteR");
 		client.user.setPresence({
 			activities: [
 				{

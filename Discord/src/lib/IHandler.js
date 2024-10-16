@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { resolveAPU } from '@lib/resolveAPU.js'
+import { LogHandler } from '@src/LogHandler.js';
 
 class IHandler {
 	constructor(client) {
@@ -11,6 +12,7 @@ class IHandler {
 		this.client = client;
 		this.availableFiles = [];
 		this.availableInstances = new Map();
+		this.logger = new LogHandler();
 	}
 
 	async getFiles( handlerType ) {

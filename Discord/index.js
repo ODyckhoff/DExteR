@@ -22,20 +22,29 @@ console.log("8 888888888P'      8 888888888888 .8'      `8.`8888.       8 8888  
 console.log("");
 console.log("DEXTER is a Discord EXTEndable Robot - Created to allow cutom modules to be used for any Discord Guilds!");
 console.log();
-console.log("[LOG] This is what a console.log looks like.");
-console.warn("[WARN] This is what a console.warn looks like.");
-console.error("[ERROR] This is what a console.error looks like.");
-console.log();
-console.log(chalk.green("Starting DEXTER..."));
-console.log(chalk.green("=================="));
+console.log(chalk.green("Initialising DEXTER..."));
+console.log(chalk.green("======================"));
 import path from 'path';
 import { fileURLToPath } from 'node:url';
 import { Client, Collection, GatewayIntentBits } from 'discord.js';
 
 const { ConfigHandler   } = await import('@src/ConfigHandler.js');
+const { LogHandler      } = await import('@src/LogHandler.js');
 const { CommandsHandler } = await import('@src/CommandsHandler.js');
 const { EventsHandler   } = await import('@src/EventsHandler.js');
 const { ModuleHandler   } = await import('@src/ModuleHandler.js');
+
+const logHandler = new LogHandler();
+logHandler.log("DExteR has been started.", 'info', 'index.js');
+
+process.on('SIGTERM', () => {
+    logHandler.log("DExteR has received SIGINT from system, exiting,", 'info', 'SYSTEM');
+    process.exit();
+});
+
+logHandler.log("Loading Core Config...", 'info', 'core');
+const configHandler = new ConfigHandler();
+logHandler.log("Loaded Config.", 'success');
 
 const client = new Client({
 	intents: [
@@ -44,14 +53,16 @@ const client = new Client({
 		GatewayIntentBits.MessageContent,
 	]
 });
+logHandler.log("Loading Commands...", 'info', 'core');
 const commandsHandler = new CommandsHandler(client);
 try {
 	const commands = await commandsHandler.getFiles('commands');
 	const commandsMap = await commandsHandler.loadFiles( commands );
 }
 catch( err ) {
-	console.error( err );
+	logHandler.log(err, 'error', 'CommandsHandler');
 }
+logHandler.log("Commands Loaded", 'success');
 
 	//await commandsHandler.globalCmdUpdate( client );
 	//console.dir(client.commands, {depth:null});
@@ -65,6 +76,7 @@ catch( err ) {
 //	console.error('Error loading modules: ', moduleError);
 //}
 
+logHandler.log("Loading Events...", 'info', 'core');
 const eventsHandler = new EventsHandler(client);
 try {
 	const events = await eventsHandler.getFiles('events');
@@ -72,10 +84,11 @@ try {
 	eventsHandler.registerEvents(client, eventsMap, commandsHandler);
 }
 catch( err ) {
+	logHandler.log(err, 'error', 'EventsHandler');
 	console.error( err );
 }
+logHandler.log("Loaded Events", 'success');
 
-const configHandler = new ConfigHandler();
 try {
     const token = await configHandler.getConfigValue('app_settings.token');
 
@@ -83,10 +96,10 @@ try {
         client.login(token);
     }
     else {
-        console.error('config value \'app_settings.token\' is undefined.');
+        logHandler.log('config value \'app_settings.token\' is undefined.', 'error', 'ConfigHandler');
     }
 }
 catch( error ) {
-	console.error('Error loading token from config file: ', error);
+	logHandler.log(error, 'error', 'ConfigHandler');
 }
 

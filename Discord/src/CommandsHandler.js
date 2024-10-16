@@ -125,7 +125,7 @@ class CommandsHandler extends IHandler {
 	try {
 		client.commands = new Collection();
 		//console.dir(this.availableInstances, {depth:null});
-		console.log('Started refreshing application global (/) commands.');
+		this.logger.log('Started refreshing application global (/) commands.', 'info', 'CommandsHandler');
 		const commands = [];
 
 		for( const [commandName, { instance: command }] of this.availableInstances) {
@@ -142,7 +142,7 @@ class CommandsHandler extends IHandler {
 		await client.application?.commands.set(commands);
 		//updatecommandsinthearray();
 
-		console.log(chalk.green(`Successfully reloaded ${commands.length} application global (/) commands.`));
+		this.logger.log(`Successfully reloaded ${commands.length} application global (/) commands.`, 'success');
 	}
 	catch (error) {
 		console.error('Error reloading application (/) commands:', error);

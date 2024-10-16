@@ -83,18 +83,13 @@ class EventsHandler extends IHandler {
     }
 
     registerEvents(client, eventsMap, commandsHandler) {
-	    console.log('Registering Events');
 	    //console.dir(this.availableInstances, {depth:null});
 	    for(const [eventName, { instance: event }] of eventsMap) {
-		    console.log("doing stuff in for loop");
-		    console.log('ClassName: ' + eventName);
-		    console.log('Discord Event Name: ' + event.name);
 		    //console.dir(event, {depth: null});
 		    if(event.once) {
-			    console.log('Registering "once" event EventReady');
 			    client.once(event.name, (... args) => {
 				    event.execute(args[0], commandsHandler);
-				    console.log(`Executing event: ${eventName}`);
+				    //console.log(`Executing event: ${eventName}`);
 			    });
 		    }
 		    else {
