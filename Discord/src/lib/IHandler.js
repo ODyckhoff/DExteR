@@ -11,34 +11,34 @@ class IHandler {
 		// Returns a list of available file paths.
 		
 		const handlerDir = resolveAPU( `@${ handlerType.toLowerCase() }` );
-
-		function getFilesRecursively( directoryPath ) {
-			let files = [];
-
-			const entries = fs.readdirSync( directoryPath, 
-				{ withFileTypes: true }
-			);
-		
-			for( const entry of entries ) {
-				const entryPath = path.join(
-					directoryPath,
-					entry.name
-				);
-				if( entry.isDirectory() ) {
-					files = files.concat(
-						getFilesRecursively( entryPath )
-					);
-				}
-				else if( entry.isFile() && entry.name.endsWith( '.js' ) ) {
-					files.push( entryPath );
-				}
-			}
-			return files;
-		}
-
 		const allFiles = getFilesRecursively( handlerDir );
+
 		const validFiles = allFiles.filter( file => this.validateFileContent( file ) );
 		return validFiles;
+	}
+
+	getFilesRecursively( directoryPath ) {
+		let files = [];
+
+		const entries = fs.readdirSync( directoryPath, 
+			{ withFileTypes: true }
+		);
+	
+		for( const entry of entries ) {
+			const entryPath = path.join(
+				directoryPath,
+				entry.name
+			);
+			if( entry.isDirectory() ) {
+				files = files.concat(
+					getFilesRecursively( entryPath )
+				);
+			}
+			else if( entry.isFile() && entry.name.endsWith( '.js' ) ) {
+				files.push( entryPath );
+			}
+		}
+		return files;
 	}
 
 	async loadFiles( filePaths ) {
