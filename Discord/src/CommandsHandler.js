@@ -1,6 +1,6 @@
 import path from 'node:path';
 import fs from 'node:fs';
-import { Client, Collection, Interaction } from 'discord.js';
+import { Client, Collection } from 'discord.js';
 
 class CommandsHandler {
     constructor() {
