@@ -13,7 +13,7 @@
     "@lib": "./src/lib",
     "@modules": "./src/modules",
     "@src": "./src",
-    "@utils": "./src/utils"
+    "@utils": "./src/lib"
   },
   "keywords": [],
   "author": "",

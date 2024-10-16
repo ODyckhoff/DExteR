@@ -1,8 +1,9 @@
 import path from 'node:path';
 import pkg from 'mysql2/promise';
 const { mysql } = pkg;
+import { resolveAPU } from '@lib/resolveAPU.js';
 
-const configPath = path.join(global.__rootdir, 'src/ConfigHandler.js');
+const configPath = resolveAPU('@src/ConfigHandler.js', 'path');
 const { ConfigHandler } = await import(configPath);
 
 class DatabaseHandler {
