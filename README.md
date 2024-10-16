@@ -1,7 +1,7 @@
 # DExteR
 A Discord Extendable Robot, written using NodeJS/ESM.
 
-[!DExteR Logo](assets/img/core/dexter-logo-transparent)
+[!DExteR Logo](assets/img/core/dexter-logo-transparent.png)
 
 ## Table of Contents
 - [Introduction](#introduction)
