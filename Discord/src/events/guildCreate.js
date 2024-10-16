@@ -2,6 +2,7 @@ import path from 'path';
 import { Events } from 'discord.js';
 import { resolveAPU } from '@utils/resolveAPU.js';
 import { IEvent } from '@lib/IEvent.js';
+const { DatabaseHandler } = await import('@src/DatabaseHandler.js');
 
 class EventGuildCreate extends IEvent {
 	constructor(client) {

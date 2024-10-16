@@ -23,8 +23,8 @@ class EventInteractionCreate extends IEvent {
 		return false;
 	}
 
-	async execute(interaction) {
-
+	async execute(interaction, commandsHandler) {
+		await commandsHandler.handleInteraction(interaction);
 	}
 }
 

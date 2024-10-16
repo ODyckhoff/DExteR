@@ -3,6 +3,7 @@ import path from 'node:path';
 import { resolveAPU } from '@utils/resolveAPU.js';
 import { IHandler } from '@lib/IHandler.js';
 import { parse } from 'acorn';
+import { Events } from 'discord.js';
 
 class EventsHandler extends IHandler {
     constructor(client) {
@@ -81,23 +82,30 @@ class EventsHandler extends IHandler {
 	    }
     }
 
-    registerEvents(client, eventsMap) {
+    registerEvents(client, eventsMap, commandsHandler) {
 	    console.log('Registering Events');
-	    console.dir(this.availableInstances, {depth:null});
+	    //console.dir(this.availableInstances, {depth:null});
 	    for(const [eventName, { instance: event }] of eventsMap) {
 		    console.log("doing stuff in for loop");
 		    console.log('ClassName: ' + eventName);
 		    console.log('Discord Event Name: ' + event.name);
-		    console.dir(event, {depth: null});
+		    //console.dir(event, {depth: null});
 		    if(event.once) {
 			    console.log('Registering "once" event EventReady');
-			    client.once(event.name, (...args) => {
-				    event.execute(...args);
+			    client.once(event.name, (... args) => {
+				    event.execute(args[0], commandsHandler);
 				    console.log(`Executing event: ${eventName}`);
 			    });
 		    }
 		    else {
-			    client.on(event.name, (...args) => event.execute(...args));
+			    client.on(event.name, (... args) => {
+				    if(event.name === Events.InteractionCreate) {
+					    event.execute(args[0], commandsHandler);
+				    }
+				    else {
+					    event.execute(... args);
+				    }
+			    });
 		    }
 	    }
     }

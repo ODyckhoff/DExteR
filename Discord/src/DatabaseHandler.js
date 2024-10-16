@@ -1,6 +1,5 @@
 import path from 'node:path';
-import pkg from 'mysql2/promise';
-const { mysql } = pkg;
+import mysql from 'mysql2/promise';
 import { resolveAPU } from '@lib/resolveAPU.js';
 
 const configPath = resolveAPU('@src/ConfigHandler.js', 'path');
@@ -8,8 +7,12 @@ const { ConfigHandler } = await import(configPath);
 
 class DatabaseHandler {
 	constructor() {
+		this.init();
+	}
+
+	async init() {
 		const configHandler = new ConfigHandler();
-		const dbData = configHandler.getConfigValue('db_settings');
+		const dbData = await configHandler.getConfigValue('db_settings');
 
 		try {
 			this.pool = mysql.createPool({
@@ -27,7 +30,10 @@ class DatabaseHandler {
 		}
 	}
 
-	async queryDatabase(query, values = []) {
+	queryDatabase = async (query, values = []) => {
+		while(!this.pool) {
+			await new Promise(resolve => setTimeout(resolve, 100));
+		}
 		const connection = await this.pool.getConnection();
 		try {
 			const [rows] = await connection.execute(query, values);

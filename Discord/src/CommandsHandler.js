@@ -6,6 +6,7 @@ import { Collection } from 'discord.js';
 import { resolveAPU } from '@utils/resolveAPU.js';
 import { IHandler } from '@lib/IHandler.js';
 import { parse } from 'acorn';
+import { ConfigHandler } from '@src/ConfigHandler.js';
 
 class CommandsHandler extends IHandler {
     constructor(client) {
@@ -86,11 +87,14 @@ class CommandsHandler extends IHandler {
     async handleInteraction(interaction) {
         if(!interaction.isChatInputCommand()) return;
 
+	console.log("Attepting to print interaction.client.commands");
+	//console.dir(interaction.client.commands, {depth:null});
+	console.log("END");
         const command = interaction.client.commands.get(interaction.commandName);
 
         if(!command) {
             console.error(`[ERROR] No command matching ${interaction.commandName} was found.`);
-            await interaction.followUp({ content: `No command matching ${interaction.commandName} was found.` });
+            await interaction.reply({ content: `No command matching ${interaction.commandName} was found.` });
             return;
         }
 
@@ -114,30 +118,44 @@ class CommandsHandler extends IHandler {
     }
 
     async globalCmdUpdate(client) {
+
+	// First we need to check if any commands actually need updating.
+	//const storedCommands = await getGlobalCommands();
+
 	try {
+		client.commands = new Collection();
+		//console.dir(this.availableInstances, {depth:null});
 		console.log('Started refreshing application global (/) commands.');
-
-		const commandPath = resolveAPU('@commands', 'path');
-		const commandFiles = fs.readdirSync(commandPath).filter( file =>
-			file.endsWith('js')
-		);
-
 		const commands = [];
 
-		for (const file of commandFiles) {
-			const filePath = path.join(commandPath, file);
-			const commandModule = await import(filePath);
-			const command = commandModule.default();
-			commands.push(command.data.toJSON());
+		for( const [commandName, { instance: command }] of this.availableInstances) {
+			const commandData = command.data.toJSON();
+			//console.dir(commandData, { depth: null });
+			//if(!inthestoredcommandsarray) {
+				commands.push(command.data.toJSON());
+				client.commands.set(command.data.name, command);
+			//}
 		}
 
+		//console.dir(commands, { depth: null});
+
 		await client.application?.commands.set(commands);
+		//updatecommandsinthearray();
 
 		console.log(chalk.green(`Successfully reloaded ${commands.length} application global (/) commands.`));
 	}
 	catch (error) {
 		console.error('Error reloading application (/) commands:', error);
 	}
+    }
+
+    getGlobalCommands() {
+	const commandsHandler = new CommandsHandler('src/commands/globalcommands.json');
+	return commandsHandler.config;
+    }
+
+    storeGlobalCommands() {
+
     }
 
     #isCommandValid(command) {

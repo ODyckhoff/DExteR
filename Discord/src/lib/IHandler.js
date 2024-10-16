@@ -70,7 +70,7 @@ class IHandler {
 	}
 
 	validateFile( filePath ) {
-		const err = "Method 'validateFileContent()' must be implemetned.";
+		const err = "Method 'validateFile()' must be implemetned.";
 		console.error( err );
 		throw new Error( err );
 	}

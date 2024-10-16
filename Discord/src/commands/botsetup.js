@@ -1,6 +1,6 @@
-import path from 'node:path';
+//import path from 'node:path';
 import { SlashCommandBuilder } from 'discord.js';
-import { resolveAPU } from '@lib/resolveAPU.js';
+//import { resolveAPU } from '@lib/resolveAPU.js';
 import { DatabaseHandler } from '@src/DatabaseHandler.js';
 import { ModuleHandler } from '@src/ModuleHandler.js';
 import { ICommand } from '@lib/ICommand.js';
@@ -24,7 +24,7 @@ class CommandBotSetup extends ICommand {
 
 	async execute(interaction) {
 		console.log("Bot Setup Command triggered");
-		databaseHandler = new DatabaseHandler();
+		const databaseHandler = new DatabaseHandler();
 		// Authorization check: Allow server administrators OR users with the admin role
 		const adminRoleId = this.#getBotAdminRole(interaction.guild.id); 
 		if (
@@ -80,7 +80,7 @@ class CommandBotSetup extends ICommand {
 			const action = subcommand;
 			if(action === 'list') {
 				console.log("module list subcommand triggered");
-				const moduleList = modules.map(m =>
+				const moduleList = availableModules.map(m =>
 					`* ${m.name}: ${m.enabled ? 'Enabled' : 'Disabled'}`
 				).join('\n');
 
@@ -92,7 +92,7 @@ class CommandBotSetup extends ICommand {
 				const moduleName = interaction.options.getString('module_name');
 				try {
 					console.log(`module subcommand with module_name argument triggered: ${moduleName}`);
-					const module = modules.find(m => m.name === moduleName);
+					const module = availableModules.find(m => m.name === moduleName);
 					if (!module) {
 						console.error('Module not found');
 						return interaction.reply({ content: 'Module not found.', ephemeral: true });

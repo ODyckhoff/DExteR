@@ -1,5 +1,6 @@
 import { Events } from 'discord.js';
 import { IEvent } from '@lib/IEvent.js'
+import { CommandsHandler } from '@src/CommandsHandler.js';
 
 class EventReady extends IEvent {
 	constructor(client) {
@@ -21,7 +22,7 @@ class EventReady extends IEvent {
 		return true;
 	}
 
-	execute(client) {
+	async execute(client, commandsHandler) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 		client.user.setPresence({
 			activities: [
@@ -33,6 +34,10 @@ class EventReady extends IEvent {
 			status: 'online',
 			afk: false
 		});
+
+		await commandsHandler.globalCmdUpdate( client );
+	//	console.dir(client.commands.get('userinfo').data, {depth:null});
+		//console.dir(client.commands, {depth:null});
 	}
 }
 export { EventReady }
