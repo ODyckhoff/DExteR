@@ -28,7 +28,7 @@ class CommandsHandler {
     #getFiles(commandFiles, commandsPath) {
         for(const file of commandFiles) {
             const filePath = path.join(commandsPath, file);
-                const command = require(filePath);
+                const command = import(filePath);
 
                 // Check file is valid
                 if(this.#isCommandValid(command)) {

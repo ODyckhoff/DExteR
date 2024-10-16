@@ -17,7 +17,7 @@ class EventsHandler {
 
     #getFile(file, client) {
         const filePath = path.join(global.__rootdir, 'src/events', file);
-        const event = require(filePath);
+        const event = import(filePath);
         if(event.once) {
             client.once(event.name, (...args) => event.execute(...args));
         }
