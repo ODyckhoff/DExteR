@@ -21,3 +21,5 @@ class EventsHandler {
         }
     }
 }
+
+export { EventsHandler };
