@@ -15,7 +15,7 @@ A more verbose description of the bot will go here.
 ## Installation
 1. Clone the repository:
 ```bash
- git clone https://github.com/ODyckhoff/DExteR.git.git
+ git clone https://github.com/ODyckhoff/DExteR.git
 ```
 
 2. Install dependencies:
