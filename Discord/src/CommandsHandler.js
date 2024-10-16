@@ -79,4 +79,4 @@ class CommandsHandler {
     }
 }
 
-module.exports = CommandsHandler;
+export { CommandsHandler };
