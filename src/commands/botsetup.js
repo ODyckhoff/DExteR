@@ -5,8 +5,8 @@ import { DatabaseHandler } from '@src/DatabaseHandler.js';
 import { ModuleHandler } from '@src/ModuleHandler.js';
 import { ICommand } from '@lib/ICommand.js';
 
-const moduleHandler = new ModuleHandler();
-const availableModules = moduleHandler.getAvailableModules();
+//const moduleHandler = new ModuleHandler();
+//const availableModules = moduleHandler.getAvailableModules();
 
 class CommandBotSetup extends ICommand {
 
@@ -22,7 +22,7 @@ class CommandBotSetup extends ICommand {
 		return this.#createSlashCommand();
 	}
 
-	async execute(interaction) {
+	async execute(interaction, moduleHandler) {
 		console.log("Bot Setup Command triggered");
 		const databaseHandler = new DatabaseHandler();
 		// Authorization check: Allow server administrators OR users with the admin role
@@ -80,12 +80,11 @@ class CommandBotSetup extends ICommand {
 			const action = subcommand;
 			if(action === 'list') {
 				console.log("module list subcommand triggered");
-				const moduleList = availableModules.map(m =>
-					`* ${m.name}: ${m.enabled ? 'Enabled' : 'Disabled'}`
-				).join('\n');
+				console.dir(moduleHandler, {depth:null});
+				const moduleList = Array.from(moduleHandler.availableInstances.keys()).join('\n*');
 
 				await interaction.reply({
-					content: `Available modules:\n${moduleList}`,
+					content: `## Available modules:\n* ${moduleList}`,
 					ephemeral: true
 				});
 			} else {
@@ -137,7 +136,7 @@ class CommandBotSetup extends ICommand {
 
 	#createSlashCommand() {
 		return new SlashCommandBuilder()
-		        .setName('botsetup')
+		        .setName('dexter-admin')
 		        .setDescription('configure bot settings')
 			.addSubcommand(subcommand =>
 				subcommand.setName('adminrole')

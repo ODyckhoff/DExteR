@@ -7,12 +7,10 @@ import { IHandler } from '@lib/IHandler.js';
 class ModuleHandler extends IHandler {
 	constructor(client) {
 		super(client);
-		this.loadedModules = new Map();
-		this.availableModules = [];
 	}
 
 	getAvailableModules() {
-		return this.availableModules;
+		return this.availableFiles;
 	}
 
 	validateFile( filePath ) {

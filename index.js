@@ -33,9 +33,13 @@ const { LogHandler      } = await import('@src/LogHandler.js');
 const { CommandsHandler } = await import('@src/CommandsHandler.js');
 const { EventsHandler   } = await import('@src/EventsHandler.js');
 const { ModuleHandler   } = await import('@src/ModuleHandler.js');
+const { StartUp } = await import('@lib/startup.js');
 
 const logHandler = new LogHandler();
 logHandler.log("DExteR has been started.", 'info', 'index.js');
+
+const startUp = new StartUp(logHandler);
+await startUp.check();
 
 process.on('SIGTERM', () => {
     logHandler.log("DExteR has received SIGINT from system, exiting,", 'info', 'SYSTEM');
@@ -54,7 +58,8 @@ const client = new Client({
 	]
 });
 logHandler.log("Loading Commands...", 'info', 'core');
-const commandsHandler = new CommandsHandler(client);
+const moduleHandler = new ModuleHandler();
+const commandsHandler = new CommandsHandler(client, moduleHandler);
 try {
 	const commands = await commandsHandler.getFiles('commands');
 	const commandsMap = await commandsHandler.loadFiles( commands );
@@ -68,7 +73,6 @@ logHandler.log("Commands Loaded", 'success');
 	//console.dir(client.commands, {depth:null});
 
 logHandler.log("Loading Modules...", 'info', 'core');
-const moduleHandler = new ModuleHandler();
 try {
     const modules = await moduleHandler.getFiles('modules');
     console.dir(modules, {depth:null});

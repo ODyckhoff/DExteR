@@ -4,7 +4,7 @@ import { resolveAPU } from '@lib/resolveAPU.js'
 import { LogHandler } from '@src/LogHandler.js';
 
 class IHandler {
-	constructor(client) {
+	constructor(client, moduleHandler) {
 		if( this.constructor.name === 'IHandler' ) {
 			throw new Error( "'IHandler' is an abstract class and cannot be instantiated." );
 		}
@@ -13,6 +13,7 @@ class IHandler {
 		this.availableFiles = [];
 		this.availableInstances = new Map();
 		this.logger = new LogHandler();
+		this.moduleHandler = moduleHandler;
 	}
 
 	async getFiles( handlerType ) {

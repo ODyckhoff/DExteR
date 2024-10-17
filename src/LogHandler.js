@@ -35,7 +35,12 @@ class LogHandler {
 		}
 
 		const formattedMessage = this.formatMessage(message, level, moduleName, interaction);
-		console.log(logColors[level](formattedMessage));
+		if(level == 'error') {
+			console.error(formattedMessage);
+		}
+		else {
+			console.log(logColors[level](formattedMessage));
+		}
 	}
 
 	formatMessage(message, level, moduleName, interaction) {

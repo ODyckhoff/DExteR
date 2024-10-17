@@ -7,10 +7,13 @@ import { resolveAPU } from '@utils/resolveAPU.js';
 import { IHandler } from '@lib/IHandler.js';
 import { parse } from 'acorn';
 import { ConfigHandler } from '@src/ConfigHandler.js';
+import { LogHandler } from '@src/LogHandler.js';
 
 class CommandsHandler extends IHandler {
-    constructor(client) {
-	super(client);
+    constructor(client, moduleHandler) {
+	super(client, moduleHandler);
+	this.logger = new LogHandler();
+	    console.dir(this.moduleHandler, {depth:null});
     }
 
     validateFile( filePath ) {
@@ -99,10 +102,10 @@ class CommandsHandler extends IHandler {
         }
 
         try {
-            await command.execute(interaction);
+            await command.execute(interaction, this.moduleHandler);
         }
         catch (error) {
-            console.error(`[ERROR] Error executing command ${interaction.commandName}: ${error}`);
+            this.logger.log(`Error executing command ${interaction.commandName}: ${error}`, 'error', 'CommandBotSetup');
             if(interaction.replied || interaction.deferred) {
                 await interaction.followUp({ content: `There was an error whilst executing ${interaction.commandName}!`, ephemeral: true });
             }

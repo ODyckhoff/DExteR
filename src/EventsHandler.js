@@ -6,8 +6,8 @@ import { parse } from 'acorn';
 import { Events } from 'discord.js';
 
 class EventsHandler extends IHandler {
-    constructor(client) {
-	super(client);
+    constructor(client, moduleHandler) {
+	super(client, moduleHandler);
     }
 
     validateFile( filePath ) {
