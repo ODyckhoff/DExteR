@@ -14,6 +14,11 @@ A Discord Extendable Robot, written using NodeJS/ESM.
 ## Introduction
 A more verbose description of the bot will go here.
 
+## Dependencies
+![MySQL](https://img.shields.io/badge/mysql-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
+![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+
 ## Installation
 1. Clone the repository:
 ```bash
@@ -37,3 +42,7 @@ With DExteR installed, simply run:
 This software is covered by the Mozilla Public License, Version 2. A copy of this license is included in this repository: [Link to MPLv2](LICENSE)
 
 A brief summary is that you can do whatever you like with this code, so long as it remains open source under the terms of the license. I do not have any liability for your use of the software, nor do I offer any warranty.
+
+--
+
+[![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/odyckhoff)
